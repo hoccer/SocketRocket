@@ -1331,6 +1331,8 @@ static const size_t SRFrameHeaderOverhead = 32;
         unmasked_payload =  (const uint8_t *)[data UTF8String];
     } else {
         assert(NO);
+        [self closeWithCode:SRStatusCodeMessageTooBig reason:@"Internal failure"];
+        return;
     }
     
     if (payloadLength < 126) {
