@@ -646,8 +646,8 @@ static __strong NSData *CRLFCRLF;
             NSUInteger usedLength = 0;
             
             BOOL success = [reason getBytes:(char *)mutablePayload.mutableBytes + sizeof(uint16_t) maxLength:payload.length - sizeof(uint16_t) usedLength:&usedLength encoding:NSUTF8StringEncoding options:NSStringEncodingConversionExternalRepresentation range:NSMakeRange(0, reason.length) remainingRange:&remainingRange];
-            
             assert(success);
+            (void)success;// avoid unused warning when assertions disabled
             assert(remainingRange.length == 0);
 
             if (usedLength != maxMsgSize) {
@@ -1030,6 +1030,7 @@ static const uint8_t SRPayloadLenMask   = 0x7F;
                 
                 if (header.masked) {
                     assert(mapped_size >= sizeof(_currentReadMaskOffset) + offset);
+                    (void)mapped_size; // avoid unused warning when assertions disabled
                     memcpy(self->_currentReadMaskKey, ((uint8_t *)mapped_buffer) + offset, sizeof(self->_currentReadMaskKey));
                 }
                 
