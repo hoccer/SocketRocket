@@ -48,6 +48,7 @@
 #error SocketRocket muust be compiled with ARC enabled
 #endif
 
+# define CHECK_CERTS_DEBUG NO
 
 typedef enum  {
     SROpCodeTextFrame = 0x1,
@@ -1374,11 +1375,14 @@ static const size_t SRFrameHeaderOverhead = 32;
                     SecCertificateRef cert = SecTrustGetCertificateAtIndex(secTrust, i);
                     NSData *certData = CFBridgingRelease(SecCertificateCopyData(cert));
                     
+                    if (CHECK_CERTS_DEBUG) NSLog(@"SocketRocket stream:certData %ld = len = %lu", (long)i, (unsigned long)certData.length);
                     for (id ref in sslCerts) {
                         SecCertificateRef trustedCert = (__bridge SecCertificateRef)ref;
                         NSData *trustedCertData = CFBridgingRelease(SecCertificateCopyData(trustedCert));
-                        
+                        if (CHECK_CERTS_DEBUG) NSLog(@"SocketRocket stream: comparing with trustedCertData len %lu", (unsigned long)trustedCertData.length);
+
                         if ([trustedCertData isEqualToData:certData]) {
+                            if (CHECK_CERTS_DEBUG) NSLog(@"SocketRocket stream: found cert len %lu", (unsigned long)trustedCertData.length);
                             _pinnedCertFound = YES;
                             break;
                         }
